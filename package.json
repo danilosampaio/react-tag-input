@@ -1,7 +1,7 @@
 {
-  "name": "@pathofdev/react-tag-input",
+  "name": "@danilosampaio/react-tag-input",
   "version": "1.0.7",
-  "description": "A simple tag input component for React with editable tags",
+  "description": "A temporary fork from @pathofdev/react-tag-input with PR #8 - Add option for accepting input via different keys and onBlur",
   "main": "./build/umd/index.min.js",
   "module": "./build/module/index.js",
   "types": "./build/module/index.d.ts",

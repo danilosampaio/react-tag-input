@@ -13,6 +13,8 @@ export interface ReactTagInputProps {
   editable?: boolean;
   readOnly?: boolean;
   removeOnBackspace?: boolean;
+  addOnBlur?: boolean;
+  delimiters?: [number];
 }
 
 interface State {
@@ -33,10 +35,10 @@ export default class ReactTagInput extends React.Component<ReactTagInputProps, S
   onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
     const { input } = this.state;
-    const { validator, removeOnBackspace } = this.props;
+    const { validator, removeOnBackspace, delimiters } = this.props;
 
-    // On enter
-    if (e.keyCode === 13) {
+    // Check if default Enter or one of the delimiter keys was hit
+    if (e.keyCode === 13 || delimiters?.includes(e.keyCode)) {
 
       // Prevent form submission if tag input is nested in <form>
       e.preventDefault();
@@ -69,12 +71,33 @@ export default class ReactTagInput extends React.Component<ReactTagInputProps, S
 
   }
 
+  onBlur = () => {
+
+    const { input } = this.state
+    const { validator, addOnBlur } = this.props
+
+    if (addOnBlur) {
+
+      // If input is blank, do nothing
+      if (input === "") { return; }
+
+      // Check if input is valid
+      const valid = validator !== undefined ? validator(input) : true
+      if (!valid) {
+        return;
+      }
+
+      // Add input to tag list
+      this.addTag(input)
+
+    }
+
+  }
+
   addTag = (value: string) => {
     const tags = [ ...this.props.tags ];
-    if (!tags.includes(value)) {
-      tags.push(value);
-      this.props.onChange(tags);
-    }
+    tags.push(value);
+    this.props.onChange(tags);
     this.setState({ input: "" });
   }
 
@@ -86,12 +109,7 @@ export default class ReactTagInput extends React.Component<ReactTagInputProps, S
 
   updateTag = (i: number, value: string) => {
     const tags = [...this.props.tags];
-    const numOccurencesOfValue = tags.reduce((prev, currentValue, index) => prev + (currentValue === value && index !== i ? 1 : 0) , 0);
-    if (numOccurencesOfValue > 0) {
-      tags.splice(i, 1);
-    } else {
-      tags[i] = value;
-    }
+    tags[i] = value;
     this.props.onChange(tags);
   }
 
@@ -131,6 +149,7 @@ export default class ReactTagInput extends React.Component<ReactTagInputProps, S
             placeholder={placeholder || "Type and press enter"}
             onChange={this.onInputChange}
             onKeyDown={this.onInputKeyDown}
+            onBlur={this.onBlur}
           />
         }
       </div>
