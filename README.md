@@ -1,5 +1,4 @@
-# React Tag Input
+# React Tag Input Fork
 
-React Tag Input is a robust, minimal and performant input field for creating multiple tags.
+A temporary fork from @pathofdev/react-tag-input with PR #8 - Add option for accepting input via different keys and onBlur
 
-[See demo & documentation](https://betterstack.dev/projects/react-tag-input)
